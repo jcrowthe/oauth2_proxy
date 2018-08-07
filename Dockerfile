@@ -1,7 +1,17 @@
-FROM drone/ca-certs
+FROM alpine:3.8
 
-ENV GODEBUG=netdns=go
+# When this Dockerfile was last refreshed (year/month/day)
+ENV REFRESHED_AT 2018-08-07
+ENV OAUTH2_PROXY_VERSION 2.2
 
-ADD bin/proxy /proxy
+# Checkout bitly's latest google-auth-proxy code from Github
+ADD bin/oauth2_proxy /oauth2_proxy
 
-ENTRYPOINT ["/proxy"]
+# Install CA certificates
+RUN apk add --no-cache --virtual=build-dependencies ca-certificates
+
+# Expose the ports we need and setup the ENTRYPOINT w/ the default argument
+# to be pass in.
+EXPOSE 8080 4180
+ENTRYPOINT [ "./oauth2_proxy" ]
+CMD [ "--upstream=http://0.0.0.0:8080/", "--http-address=0.0.0.0:4180" ]
