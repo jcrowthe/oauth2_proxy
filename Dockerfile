@@ -5,7 +5,8 @@ ENV REFRESHED_AT 2018-08-07
 ENV OAUTH2_PROXY_VERSION 2.2
 
 # Checkout bitly's latest google-auth-proxy code from Github
-ADD bin/oauth2_proxy /oauth2_proxy
+ADD oauth2_proxy-2.2.1-alpha.linux-amd64.go1.10.3.tar.gz /tmp
+RUN tar -xf /tmp/oauth2_proxy-2.2.1-alpha.linux-amd64.go1.10.3.tar.gz -C ./bin --strip-components=1 && rm /tmp/*.tar.gz
 
 # Install CA certificates
 RUN apk add --no-cache --virtual=build-dependencies ca-certificates
@@ -13,5 +14,5 @@ RUN apk add --no-cache --virtual=build-dependencies ca-certificates
 # Expose the ports we need and setup the ENTRYPOINT w/ the default argument
 # to be pass in.
 EXPOSE 8080 4180
-ENTRYPOINT [ "./oauth2_proxy" ]
+ENTRYPOINT [ "./bin/oauth2_proxy" ]
 CMD [ "--upstream=http://0.0.0.0:8080/", "--http-address=0.0.0.0:4180" ]
