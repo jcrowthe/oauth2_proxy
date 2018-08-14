@@ -13,7 +13,7 @@ import (
 type OIDCProvider struct {
 	*ProviderData
 
-	Verifier *oidc.IDTokenVerifier
+	Verifier *oidc.IdTokenVerifier
 }
 
 func NewOIDCProvider(p *ProviderData) *OIDCProvider {
@@ -36,13 +36,13 @@ func (p *OIDCProvider) Redeem(redirectURL, code string) (s *SessionState, err er
 		return nil, fmt.Errorf("token exchange: %v", err)
 	}
 
-	rawIDToken, ok := token.Extra("id_token").(string)
+	rawIdToken, ok := token.Extra("id_token").(string)
 	if !ok {
 		return nil, fmt.Errorf("token response did not contain an id_token")
 	}
 
 	// Parse and verify ID Token payload.
-	idToken, err := p.Verifier.Verify(ctx, rawIDToken)
+	idToken, err := p.Verifier.Verify(ctx, rawIdToken)
 	if err != nil {
 		return nil, fmt.Errorf("could not verify id_token: %v", err)
 	}
@@ -65,6 +65,7 @@ func (p *OIDCProvider) Redeem(redirectURL, code string) (s *SessionState, err er
 
 	s = &SessionState{
 		AccessToken:  token.AccessToken,
+		IdToken:      rawIdToken,
 		RefreshToken: token.RefreshToken,
 		ExpiresOn:    token.Expiry,
 		Email:        claims.Email,

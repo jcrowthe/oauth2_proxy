@@ -11,7 +11,7 @@ import (
 
 type SessionState struct {
 	AccessToken  string
-	IDToken      string
+	IdToken      string
 	ExpiresOn    time.Time
 	RefreshToken string
 	Email        string
@@ -30,6 +30,9 @@ func (s *SessionState) String() string {
 	o := fmt.Sprintf("Session{%s", s.accountInfo())
 	if s.AccessToken != "" {
 		o += " token:true"
+	}
+	if s.IdToken != "" {
+		o += " id_token:true"
 	}
 	if !s.ExpiresOn.IsZero() {
 		o += fmt.Sprintf(" expires:%s", s.ExpiresOn)
@@ -65,6 +68,12 @@ func (s *SessionState) EncryptedString(c *cookie.Cipher) (string, error) {
 			return "", err
 		}
 	}
+	i := s.IdToken
+	if i != "" {
+		if i, err = c.Encrypt(i); err != nil {
+			return "", err
+		}
+	}
 	r := s.RefreshToken
 	if r != "" {
 		if r, err = c.Encrypt(r); err != nil {
@@ -74,7 +83,7 @@ func (s *SessionState) EncryptedString(c *cookie.Cipher) (string, error) {
 
 	encoded_groups := base64.StdEncoding.EncodeToString([]byte(s.Groups))
 
-	return fmt.Sprintf("%s|%s|%d|%s|%s", s.accountInfo(), a, s.ExpiresOn.Unix(), r, encoded_groups), nil
+	return fmt.Sprintf("%s|%s|%d|%s|%s", s.accountInfo(), a, i, s.ExpiresOn.Unix(), r, encoded_groups), nil
 }
 
 func decodeSessionStatePlain(v string) (s *SessionState, err error) {
@@ -123,12 +132,17 @@ func DecodeSessionState(v string, c *cookie.Cipher) (s *SessionState, err error)
 		}
 	}
 
-	ts, _ := strconv.Atoi(chunks[2])
+	if chunks[2] != "" {
+		if sessionState.IdToken, err = c.Decrypt(chunks[2]); err != nil {
+			return nil, err
+		}
+	}
+
+	ts, _ := strconv.Atoi(chunks[3])
 	sessionState.ExpiresOn = time.Unix(int64(ts), 0)
 
-	// Refresh Token
-	if chunks[3] != "" {
-		if sessionState.RefreshToken, err = c.Decrypt(chunks[3]); err != nil {
+	if chunks[4] != "" {
+		if sessionState.RefreshToken, err = c.Decrypt(chunks[4]); err != nil {
 			return nil, err
 		}
 	}
