@@ -575,6 +575,7 @@ func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	session.IDToken = req.Form.Get("id_token")
+	log.Printf("IDToken: %s" , session.IDToken)
 	if p.PassGroups && session.IDToken != "" {
 		groups, err := p.provider.GetGroups(session, p.FilterGroups)
 		if err != nil {
