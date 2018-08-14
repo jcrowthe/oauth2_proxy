@@ -268,7 +268,7 @@ func TestAzureProviderNoGroups(t *testing.T) {
 
 	session := &SessionState{
 		AccessToken: "imaginary_access_token",
-		IdToken:     "imaginary_IdToken_token"}
+		IDToken:     "imaginary_IDToken_token"}
 
 	groups, err := p.GetGroups(session, "")
 	http.DefaultClient.Transport = nil
@@ -288,7 +288,7 @@ func TestAzureProviderWrongRequestGroups(t *testing.T) {
 
 	session := &SessionState{
 		AccessToken: "imaginary_access_token",
-		IdToken:     "imaginary_IdToken_token"}
+		IDToken:     "imaginary_IDToken_token"}
 
 	groups, err := p.GetGroups(session, "")
 	http.DefaultClient.Transport = nil
@@ -307,7 +307,7 @@ func TestAzureProviderMultiRequestsGroups(t *testing.T) {
 
 	session := &SessionState{
 		AccessToken: "imaginary_access_token",
-		IdToken:     "imaginary_IdToken_token"}
+		IDToken:     "imaginary_IDToken_token"}
 
 	groups, err := p.GetGroups(session, "")
 	http.DefaultClient.Transport = nil
@@ -321,7 +321,7 @@ func TestAzureEmptyPermittedGroups(t *testing.T) {
 
 	session := &SessionState{
 		AccessToken: "imaginary_access_token",
-		IdToken:     "imaginary_IdToken_token",
+		IDToken:     "imaginary_IDToken_token",
 		Groups:      "no one|cares|non existing|groups"}
 	result := p.ValidateGroup(session)
 
@@ -334,7 +334,7 @@ func TestAzureWrongPermittedGroups(t *testing.T) {
 
 	session := &SessionState{
 		AccessToken: "imaginary_access_token",
-		IdToken:     "imaginary_IdToken_token",
+		IDToken:     "imaginary_IDToken_token",
 		Groups:      "no one|cares|non existing|groups|test-group-1"}
 	result := p.ValidateGroup(session)
 
@@ -347,7 +347,7 @@ func TestAzureRightPermittedGroups(t *testing.T) {
 
 	session := &SessionState{
 		AccessToken: "imaginary_access_token",
-		IdToken:     "imaginary_IdToken_token",
+		IDToken:     "imaginary_IDToken_token",
 		Groups:      "no one|cares|test-group-2|non existing|groups"}
 	result := p.ValidateGroup(session)
 

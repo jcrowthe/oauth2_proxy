@@ -91,7 +91,7 @@ type Options struct {
 	CompiledRegex []*regexp.Regexp
 	provider      providers.Provider
 	signatureData *SignatureData
-	oidcVerifier  *oidc.IdTokenVerifier
+	oidcVerifier  *oidc.IDTokenVerifier
 }
 
 type SignatureData struct {

@@ -135,7 +135,7 @@ func (p *AzureProvider) GetGroups(s *SessionState, f string) ([]string, error) {
 		return []string{}, errors.New("missing access token")
 	}
 
-	if s.IdToken == "" {
+	if s.IDToken == "" {
 		return []string{}, errors.New("missing id token")
 	}
 

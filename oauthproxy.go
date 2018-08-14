@@ -660,8 +660,8 @@ func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	session.IdToken = req.Form.Get("id_token")
-	if p.PassGroups && session.IdToken != "" {
+	session.IDToken = req.Form.Get("id_token")
+	if p.PassGroups && session.IDToken != "" {
 		groups, err := p.provider.GetGroups(session, p.FilterGroups)
 		if err != nil {
 			p.ErrorPage(rw, 500, "Internal Error", "Internal Error")
@@ -813,11 +813,11 @@ func (p *OAuthProxy) Authenticate(rw http.ResponseWriter, req *http.Request) int
 	if p.PassAccessToken && session.AccessToken != "" {
 		req.Header["X-Forwarded-Access-Token"] = []string{session.AccessToken}
 	}
-	if p.PassAuthorization && session.IdToken != "" {
-		req.Header["Authorization"] = []string{fmt.Sprintf("Bearer %s", session.IdToken)}
+	if p.PassAuthorization && session.IDToken != "" {
+		req.Header["Authorization"] = []string{fmt.Sprintf("Bearer %s", session.IDToken)}
 	}
-	if p.SetAuthorization && session.IdToken != "" {
-		rw.Header().Set("Authorization", fmt.Sprintf("Bearer %s", session.IdToken))
+	if p.SetAuthorization && session.IDToken != "" {
+		rw.Header().Set("Authorization", fmt.Sprintf("Bearer %s", session.IDToken))
 	}
 	if session.Email == "" {
 		rw.Header().Set("GAP-Auth", session.User)

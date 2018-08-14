@@ -11,7 +11,7 @@ import (
 
 type SessionState struct {
 	AccessToken  string
-	IdToken      string
+	IDToken      string
 	ExpiresOn    time.Time
 	RefreshToken string
 	Email        string
@@ -31,7 +31,7 @@ func (s *SessionState) String() string {
 	if s.AccessToken != "" {
 		o += " token:true"
 	}
-	if s.IdToken != "" {
+	if s.IDToken != "" {
 		o += " id_token:true"
 	}
 	if !s.ExpiresOn.IsZero() {
@@ -68,7 +68,7 @@ func (s *SessionState) EncryptedString(c *cookie.Cipher) (string, error) {
 			return "", err
 		}
 	}
-	i := s.IdToken
+	i := s.IDToken
 	if i != "" {
 		if i, err = c.Encrypt(i); err != nil {
 			return "", err
@@ -133,7 +133,7 @@ func DecodeSessionState(v string, c *cookie.Cipher) (s *SessionState, err error)
 	}
 
 	if chunks[2] != "" {
-		if sessionState.IdToken, err = c.Decrypt(chunks[2]); err != nil {
+		if sessionState.IDToken, err = c.Decrypt(chunks[2]); err != nil {
 			return nil, err
 		}
 	}
