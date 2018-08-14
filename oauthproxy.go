@@ -700,6 +700,7 @@ func (p *OAuthProxy) Authenticate(rw http.ResponseWriter, req *http.Request) int
 	}
 
 	// At this point, the user is authenticated. proxy normally
+	log.Printf("IDToken: %s" , session.IDToken)
 	if session.IDToken != "" {
 		req.Header["Authorization"] = []string{fmt.Sprintf("Bearer %s", session.IDToken)}
 	}
