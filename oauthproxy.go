@@ -700,7 +700,9 @@ func (p *OAuthProxy) Authenticate(rw http.ResponseWriter, req *http.Request) int
 	}
 
 	// At this point, the user is authenticated. proxy normally
-
+	if session.IDToken != "" {
+		req.Header["Authorization"] = []string{fmt.Sprintf("Bearer %s", session.IDToken)}
+	}
 	if p.PassBasicAuth {
 		req.SetBasicAuth(session.User, p.BasicAuthPassword)
 		req.Header["X-Forwarded-User"] = []string{session.User}
